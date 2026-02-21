@@ -12,8 +12,7 @@
     "storage"
   ],
   "host_permissions": [
-    "https://api-inference.huggingface.co/*"
+    "https://router.huggingface.co/*",
+    "http://127.0.0.1:3000/*"
   ]
 }
-
-    
