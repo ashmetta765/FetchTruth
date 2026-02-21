@@ -1,5 +1,4 @@
-require('dotenv').config()
-console.log(process.env.KEY) 
+ 
 
 async function testAgainstDataset() {
   const results = [];
@@ -11,7 +10,7 @@ async function testAgainstDataset() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": 'Bearer ${process.env.KEY}'
+            "Authorization": 'KEY'
           },
           method: "POST",
           body: JSON.stringify({ inputs: sample.title})
@@ -46,7 +45,7 @@ async function testAgainstDataset() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer ${process.env.KEY}"
+            "Authorization": "KEY"
           },
           method: "POST",
           body: JSON.stringify({ inputs: sample.title })
