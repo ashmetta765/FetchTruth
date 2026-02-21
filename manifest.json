@@ -12,8 +12,13 @@
     "storage"
   ],
   "host_permissions": [
-    "https://api-inference.huggingface.co/*"
+    "https://router.huggingface.co/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "dashboard.html", "dashboard.js" ],
+      "matches": [ "<all_urls>" ]
+    }
   ]
 }
-
-    
