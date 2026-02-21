@@ -1,0 +1,12 @@
+{
+    "manifest_version" : 3,
+    "name" : "Fake News Detection for Chrome" ,
+    "version" : "1.0" ,
+    "description": "Let's verify your news for accuracy using AI!",
+     "action": {
+         "default_popup": "popup.html"
+ 
+     }
+   
+     
+ }
