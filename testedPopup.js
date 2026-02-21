@@ -1,3 +1,6 @@
+require('dotenv').config()
+console.log(process.env.KEY) 
+
 async function testAgainstDataset() {
   const results = [];
 //this is ai api call
@@ -8,7 +11,7 @@ async function testAgainstDataset() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": 'key'
+            "Authorization": 'Bearer ${process.env.KEY}'
           },
           method: "POST",
           body: JSON.stringify({ inputs: sample.title})
@@ -43,7 +46,7 @@ async function testAgainstDataset() {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "key"
+            "Authorization": "Bearer ${process.env.KEY}"
           },
           method: "POST",
           body: JSON.stringify({ inputs: sample.title })
