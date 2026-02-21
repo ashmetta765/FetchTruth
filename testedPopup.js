@@ -1,3 +1,7 @@
+//secret key stuff 
+var myKey = config.hugging_key;
+
+// function
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("test-dataset").addEventListener("click", async () => {
         document.getElementById("test-results").innerHTML = "Analyzing...";
@@ -24,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return document.title;
                 }
             });
-
+            // function
             if (!title) {
                 document.getElementById("test-results").innerHTML = "❌ Could not find an article title on this page.";
                 return;
@@ -36,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     headers: {
                         "Content-Type": "application/json",
                         // "key" is a secret token 
-                        "Authorization": "Bearer key"
+                        "Authorization": "Bearer"+ myKey
                     },
                     method: "POST",
                     body: JSON.stringify({ inputs: title })
@@ -65,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const verdict = isReal ? "🟢 Real" : "🔴 Fake";
             const color = isReal ? "#2eccb6" : "#e74c3c";
 
-            // --- Save to chrome.storage.local ---
+            // --- Save to chrome.storage.local --- (will change becasue want to save to database)
             chrome.storage.local.get("history", (result) => {
                 const history = result.history || [];
                 history.unshift({
@@ -78,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 chrome.storage.local.set({ history });
             });
-
+            //real or fake (change name to trusgtworthy/ not trust worthy)
             document.getElementById("test-results").innerHTML = `
                 <div style="padding: 10px; border: 2px solid ${color}; border-radius: 6px; margin-top: 10px;">
                     <small><strong>Title:</strong> ${title}</small><br><br>
@@ -94,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
+// show history button
 document.getElementById("show-history").addEventListener("click", () => {
     chrome.storage.local.get("history", (result) => {
         const history = result.history || [];
@@ -103,7 +107,7 @@ document.getElementById("show-history").addEventListener("click", () => {
             document.getElementById("history-results").innerHTML = "<p>No history yet.</p>";
             return;
         }
-
+        //
         document.getElementById("history-results").innerHTML = `
             <div style="margin-top: 10px;">
                 <strong>History (${history.length} articles)</strong>
@@ -117,7 +121,7 @@ document.getElementById("show-history").addEventListener("click", () => {
                 </div>
             `).join("")}
         `;
-
+        // change or even remove this becasue data will be stored somewhere else.
         document.getElementById("clear-history").addEventListener("click", () => {
             chrome.storage.local.remove("history", () => {
                 document.getElementById("history-results").innerHTML = "<p>History cleared.</p>";
