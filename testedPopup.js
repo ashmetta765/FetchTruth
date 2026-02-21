@@ -1,127 +1,81 @@
- 
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("test-dataset").addEventListener("click", async () => {
+        document.getElementById("test-results").innerHTML = "Analyzing...";
 
-async function testAgainstDataset() {
-  const results = [];
-//this is ai api call
-  for (const [trueLabel, samples] of Object.entries(DATASET_SAMPLES)) {
-    for (const sample of samples) {
-      const response = await fetch(
-        "https://api-inference.huggingface.co/models/XSY/albert-base-v2-fakenews-discriminator",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": 'KEY'
-          },
-          method: "POST",
-          body: JSON.stringify({ inputs: sample.title})
+        try {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+            const [{ result: title }] = await chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: () => {
+                    const selectors = [
+                        'h1',
+                        '[class*="headline"]',
+                        '[class*="title"]',
+                        'meta[property="og:title"]'
+                    ];
+                    for (const selector of selectors) {
+                        const el = document.querySelector(selector);
+                        if (el) {
+                            return el.tagName === 'META' ? el.getAttribute('content') : el.innerText.trim();
+                        }
+                    }
+                    return document.title;
+                }
+            });
+
+            if (!title) {
+                document.getElementById("test-results").innerHTML = "❌ Could not find an article title on this page.";
+                return;
+            }
+
+            const response = await fetch(
+                "https://router.huggingface.co/hf-inference/models/XSY/albert-base-v2-fakenews-discriminator",
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer key"
+                    },
+                    method: "POST",
+                    body: JSON.stringify({ inputs: title })
+                }
+            );
+
+            const data = await response.json();
+            console.log("Raw API response:", JSON.stringify(data, null, 2));
+
+            if (data.error) {
+                document.getElementById("test-results").innerHTML = `⚠️ Model error: ${data.error}`;
+                return;
+            }
+
+            if (!Array.isArray(data) || !data[0]) {
+                document.getElementById("test-results").innerHTML = `⚠️ Unexpected response format.`;
+                return;
+            }
+
+            // Explicitly find LABEL_0 (fake) and LABEL_1 (real) scores
+            const labels = data[0];
+            const fakeScore = labels.find(l => l.label === "LABEL_0")?.score ?? 0;
+            const realScore = labels.find(l => l.label === "LABEL_1")?.score ?? 0;
+
+            const isReal = realScore > fakeScore;
+            const confidence = (Math.max(realScore, fakeScore) * 100).toFixed(1);
+            const verdict = isReal ? "🟢 Real" : "🔴 Fake";
+            const color = isReal ? "#2eccb6" : "#e74c3c";
+
+            document.getElementById("test-results").innerHTML = `
+                <div style="padding: 10px; border: 2px solid ${color}; border-radius: 6px; margin-top: 10px;">
+                    <small><strong>Title:</strong> ${title}</small><br><br>
+                    <strong style="color: ${color}; font-size: 18px;">${verdict}</strong><br>
+                    <span>Confidence: ${confidence}%</span><br><br>
+                    <small>🟢 Real: ${(realScore * 100).toFixed(1)}% | 🔴 Fake: ${(fakeScore * 100).toFixed(1)}%</small>
+                </div>
+            `;
+
+        } catch (err) {
+            document.getElementById("test-results").innerHTML = `❌ Error: ${err.message}`;
+            console.error("Full error:", err);
         }
-      );
-      //this is the score creator
-      const data = await response.json();
-      const top = data[0].reduce((a, b) => a.score > b.score ? a : b);
-      const predictedLabel = top.label === "LABEL_1" ? "real" : "fake";
-
-      results.push({
-        title: sample.title,
-        trueLabel,
-        predictedLabel,
-        score: (top.score * 100).toFixed(1),
-        correct: trueLabel === predictedLabel
-      });
-    }
-  }
-
-  return results;
-}
-// send info from test dataset to llm
-
-async function testAgainstDataset() {
-  const results = [];
-
-  for (const [trueLabel, samples] of Object.entries(DATASET_SAMPLES)) {
-    for (const sample of samples) {
-      const response = await fetch(
-        "https://router.huggingface.co/hf-inference/models/XSY/albert-base-v2-fakenews-discriminator",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "KEY"
-          },
-          method: "POST",
-          body: JSON.stringify({ inputs: sample.title })
-        }
-      );
-
-      const data = await response.json();
-
-      // ✅ Check what API is actually returning before reading data[0]
-      console.log("API response for:", sample.title, data);
-
-      // ✅ Handle error responses from HF API
-      if (data.error) {
-        console.error("HF API error:", data.error);
-        results.push({
-          title: sample.title,
-          trueLabel,
-          predictedLabel: "unknown",
-          score: "0",
-          correct: false,
-          error: data.error
-        });
-        continue; // skip to next sample
-      }
-
-      // ✅ Handle model still loading
-      if (!Array.isArray(data) || !data[0]) {
-        console.error("Unexpected response format:", data);
-        results.push({
-          title: sample.title,
-          trueLabel,
-          predictedLabel: "unknown",
-          score: "0",
-          correct: false,
-          error: "Unexpected response"
-        });
-        continue;
-      }
-
-      const top = data[0].reduce((a, b) => a.score > b.score ? a : b);
-      const predictedLabel = top.label === "LABEL_1" ? "real" : "fake";
-
-      results.push({
-        title: sample.title,
-        trueLabel,
-        predictedLabel,
-        score: (top.score * 100).toFixed(1),
-        correct: trueLabel === predictedLabel
-      });
-    }
-  }
-
-  return results;
-}
-
-document.getElementById("test-dataset").addEventListener("click", async () => {
-  document.getElementById("test-results").innerHTML = "Analyzing...";
-
-  try {
-    const results = await testAgainstDataset();
-    const correct = results.filter(r => r.correct).length;
-
-    document.getElementById("test-results").innerHTML = `
-      <strong>Accuracy: ${correct}/${results.length}</strong><br>
-      ${results.map(r => `
-        <div style="margin-top:8px; padding:6px; border:1px solid #ddd; border-radius:4px">
-          <small>${r.title}</small><br>
-          ${r.error 
-            ? `⚠️ Error: ${r.error}` 
-            : `${r.correct ? "✅" : "❌"} Predicted: ${r.predictedLabel} (${r.score}%)`
-          }
-        </div>
-      `).join("")}
-    `;
-  } catch (err) {
-    document.getElementById("test-results").innerHTML = `❌ Error: ${err.message}`;
-    console.error("Full error:", err);
-  }
+    });
 });
