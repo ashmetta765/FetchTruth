@@ -9,7 +9,7 @@
             background-color: white;
             font-family: 'Poppins', sans-serif;
             color: black;
-            align-items: center;
+            overflow: hidden;
         }
 
         .header {
@@ -32,9 +32,9 @@
         }
 
         .content {
-            margin-top: 40px;
+            margin-top: 20px;
             text-align: center;
-            padding: 0 20px;
+            padding: 0 20px 20px 20px;
         }
 
         .instructions {
@@ -59,25 +59,27 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="handdoc.jpg" alt="Fetch Truth Icon">
-        <div class="title">Fetch Truth</div>
-    </div>
-    <div class="content">
-        <div class="instructions">
-            Categorize your verified or unverified news here!
+    <div id="main-view">
+        <div class="header">
+            <img src="handdoc.jpg" alt="Fetch Truth Icon">
+            <div class="title">Fetch Truth</div>
         </div>
-        <button id="test-dataset" class="test-dataset">Verify!</button> 
-        <div id="test-results"></div>
+        <div class="content">
+            <div class="instructions">
+                Categorize your verified or unverified news here!
+            </div>
+            <button id="test-dataset" class="test-dataset">Verify!</button>
+            <div id="test-results"></div>
+            <button id="show-history" class="test-dataset" style="margin-top: 10px; background-color: #888;">History</button>
+        </div>
+    </div>
 
-        <button id="show-history" class="test-dataset" style="margin-top: 10px; background-color: #888;">History</button>
+    <div id="history-view" style="display: none; padding: 15px; height: 400px; overflow-y: auto; box-sizing: border-box;">
+        <button id="close-history" style="background: none; border: none; color: #888; font-size: 14px; cursor: pointer; margin-bottom: 10px; font-family: 'Poppins', sans-serif;">← Back</button>
+        <button id="open-dashboard" class="test-dataset" style="margin-top: 10px; background-color: #555;">Dashboard</button>
         <div id="history-results"></div>
     </div>
-    
-    <script src='config.js'></script> <!-- for secret key -->
-    <script src="testedPopup.js"></script> 
 
-    
-    
+    <script src="testedPopup.js"></script>
 </body>
 </html>
