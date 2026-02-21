@@ -1,14 +1,46 @@
-//secret key stuff 
-var myKey = config.hugging_key;
+const SERVER = "http://127.0.0.1:3000";
 
-// function
 document.addEventListener("DOMContentLoaded", () => {
+    function renderHistory(history) {
+        const historyResults = document.getElementById("history-results");
+
+        if (history.length === 0) {
+            historyResults.innerHTML = "<p style='font-size: 13px; color: #888;'>No history yet.</p>";
+            return;
+        }
+
+        historyResults.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <strong style="font-size: 13px;">History (${history.length} articles)</strong>
+                <button id="clear-history" style="background:none; border:none; color:red; cursor:pointer; font-size: 12px; font-family: 'Poppins', sans-serif;">Clear</button>
+            </div>
+            ${history.map(entry => `
+                <div id="entry-${encodeURIComponent(entry.url)}" style="padding: 8px; border: 2px solid ${entry.verdict === 'real' ? '#2eccb6' : '#e74c3c'}; border-radius: 6px; margin-top: 6px; font-size: 12px; text-align: left; background-color: ${entry.highlighted ? '#FFD700' : 'white'};">
+                    ${entry.highlighted ? '<small style="color: red; font-weight: bold;">⚠️ Already verified!</small><br>' : ''}
+                    <strong>${entry.verdict === 'real' ? '🟢 Real' : '🔴 Fake'}</strong> — ${entry.date}<br>
+                    <a href="${entry.url}" target="_blank" style="color: #555; word-break: break-all;">${entry.title}</a><br>
+                    <small>🟢 ${entry.realScore}% | 🔴 ${entry.fakeScore}%</small>
+                </div>
+            `).join("")}
+        `;
+
+        document.getElementById("clear-history").addEventListener("click", async () => {
+            await fetch(`${SERVER}/api/history`, { method: "DELETE" });
+            historyResults.innerHTML = "<p style='font-size: 13px; color: #888;'>History cleared.</p>";
+        });
+    }
+
     document.getElementById("test-dataset").addEventListener("click", async () => {
         document.getElementById("test-results").innerHTML = "Analyzing...";
 
         try {
             const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
             const currentUrl = tab.url;
+
+            if (currentUrl.startsWith("chrome://") || currentUrl.startsWith("chrome-extension://")) {
+                document.getElementById("test-results").innerHTML = "❌ Please navigate to a news article first.";
+                return;
+            }
 
             const [{ result: title }] = await chrome.scripting.executeScript({
                 target: { tabId: tab.id },
@@ -28,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return document.title;
                 }
             });
-            // function
+
             if (!title) {
                 document.getElementById("test-results").innerHTML = "❌ Could not find an article title on this page.";
                 return;
@@ -39,8 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        // "key" is a secret token 
-                        "Authorization": "Bearer"+ myKey
+                        "Authorization": "Bearer key"
                     },
                     method: "POST",
                     body: JSON.stringify({ inputs: title })
@@ -48,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             const data = await response.json();
-            console.log("Raw API response:", JSON.stringify(data, null, 2));
 
             if (data.error) {
                 document.getElementById("test-results").innerHTML = `⚠️ Model error: ${data.error}`;
@@ -69,64 +99,74 @@ document.addEventListener("DOMContentLoaded", () => {
             const verdict = isReal ? "🟢 Real" : "🔴 Fake";
             const color = isReal ? "#2eccb6" : "#e74c3c";
 
-            // --- Save to chrome.storage.local --- (will change becasue want to save to database)
-            chrome.storage.local.get("history", (result) => {
-                const history = result.history || [];
-                history.unshift({
+            const saveResponse = await fetch(`${SERVER}/api/entry`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     url: currentUrl,
-                    title: title,
+                    title,
                     verdict: isReal ? "real" : "fake",
                     realScore: (realScore * 100).toFixed(1),
                     fakeScore: (fakeScore * 100).toFixed(1),
                     date: new Date().toLocaleString()
-                });
-                chrome.storage.local.set({ history });
+                })
             });
-            //real or fake (change name to trusgtworthy/ not trust worthy)
-            document.getElementById("test-results").innerHTML = `
-                <div style="padding: 10px; border: 2px solid ${color}; border-radius: 6px; margin-top: 10px;">
-                    <small><strong>Title:</strong> ${title}</small><br><br>
-                    <strong style="color: ${color}; font-size: 18px;">${verdict}</strong><br>
-                    <span>Confidence: ${confidence}%</span><br><br>
-                    <small>🟢 Real: ${(realScore * 100).toFixed(1)}% | 🔴 Fake: ${(fakeScore * 100).toFixed(1)}%</small>
-                </div>
-            `;
+
+            const saveData = await saveResponse.json();
+
+            if (saveData.duplicate) {
+                const historyRes = await fetch(`${SERVER}/api/history`);
+                const history = await historyRes.json();
+
+                const highlightedHistory = history.map(entry => ({
+                    ...entry,
+                    highlighted: entry.url === currentUrl
+                }));
+
+                document.getElementById("test-results").innerHTML = "";
+                document.getElementById("main-view").style.display = "none";
+                document.getElementById("history-view").style.display = "block";
+                renderHistory(highlightedHistory);
+
+                const entryEl = document.getElementById("entry-" + encodeURIComponent(currentUrl));
+                if (entryEl) entryEl.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                setTimeout(() => {
+                    if (entryEl) {
+                        entryEl.style.backgroundColor = "white";
+                        entryEl.querySelector("small[style*='color: red']")?.remove();
+                    }
+                }, 3000);
+
+            } else {
+                document.getElementById("test-results").innerHTML = `
+                    <div style="padding: 10px; border: 2px solid ${color}; border-radius: 6px; margin-top: 10px;">
+                        <small><strong>Title:</strong> ${title}</small><br><br>
+                        <strong style="color: ${color}; font-size: 18px;">${verdict}</strong><br>
+                        <span>Confidence: ${confidence}%</span><br><br>
+                        <small>🟢 Real: ${(realScore * 100).toFixed(1)}% | 🔴 Fake: ${(fakeScore * 100).toFixed(1)}%</small>
+                    </div>
+                `;
+            }
 
         } catch (err) {
             document.getElementById("test-results").innerHTML = `❌ Error: ${err.message}`;
             console.error("Full error:", err);
         }
     });
-});
-// show history button
-document.getElementById("show-history").addEventListener("click", () => {
-    chrome.storage.local.get("history", (result) => {
-        const history = result.history || [];
 
-        if (history.length === 0) {
-            document.getElementById("history-results").innerHTML = "<p>No history yet.</p>";
-            return;
-        }
-        //
-        document.getElementById("history-results").innerHTML = `
-            <div style="margin-top: 10px;">
-                <strong>History (${history.length} articles)</strong>
-                <button id="clear-history" style="float:right; background:none; border:none; color:red; cursor:pointer;">Clear</button>
-            </div>
-            ${history.map(entry => `
-                <div style="padding: 8px; border: 1px solid ${entry.verdict === 'real' ? '#2eccb6' : '#e74c3c'}; border-radius: 6px; margin-top: 6px; font-size: 12px;">
-                    <strong>${entry.verdict === 'real' ? '🟢 Real' : '🔴 Fake'}</strong> — ${entry.date}<br>
-                    <a href="${entry.url}" target="_blank" style="color: #555; word-break: break-all;">${entry.title}</a><br>
-                    <small>🟢 ${entry.realScore}% | 🔴 ${entry.fakeScore}%</small>
-                </div>
-            `).join("")}
-        `;
-        // change or even remove this becasue data will be stored somewhere else.
-        document.getElementById("clear-history").addEventListener("click", () => {
-            chrome.storage.local.remove("history", () => {
-                document.getElementById("history-results").innerHTML = "<p>History cleared.</p>";
-            });
-        });
+    document.getElementById("show-history").addEventListener("click", async () => {
+        document.getElementById("main-view").style.display = "none";
+        document.getElementById("history-view").style.display = "block";
+
+        const res = await fetch(`${SERVER}/api/history`);
+        const history = await res.json();
+        renderHistory(history.map(entry => ({ ...entry, highlighted: false })));
     });
 
-});
+    document.getElementById("close-history").addEventListener("click", () => {
+        document.getElementById("history-view").style.display = "none";
+        document.getElementById("main-view").style.display = "block";
+    });
+
+}); // end DOMContentLoaded
