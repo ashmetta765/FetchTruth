@@ -1,6 +1,4 @@
-<!-- popup.html -->
-<!DOCTYPE html>
-<html>
+﻿<html>
 <head>
     <title>Fetch Truth</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;400&display=swap" rel="stylesheet">
@@ -44,7 +42,7 @@
             margin-bottom: 30px;
         }
 
-        .verify-button {
+        .test-dataset {
             background-color: #2eccb6;
             color: white;
             border: none;
@@ -55,28 +53,23 @@
             transition: 0.3s ease;
         }
 
-            .verify-button:hover {
+            .test-dataset:hover {
                 background-color: #28bfa8;
             }
     </style>
 </head>
 <body>
-
     <div class="header">
         <img src="handdoc.jpg" alt="Fetch Truth Icon">
         <div class="title">Fetch Truth</div>
     </div>
-
     <div class="content">
         <div class="instructions">
-            Categorize your vertified or unverified news here!
+            Categorize your verified or unverified news here!
         </div>
-            <button id="test-dataset">Test Against Dataset Samples</button>
-            <div id="test-results"></div>    
-        </div>
-        <script src="dataset.js"></script>
-        <script src="testedPopup.js"></script>
-
+        <button id="test-dataset" class="test-dataset">Verify!</button>
+        <div id="test-results"></div>
+    </div>
+    <script src="testedPopup.js"></script>
 </body>
 </html>
-
