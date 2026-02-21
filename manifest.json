@@ -4,9 +4,16 @@
     "version" : "1.0" ,
     "description": "Let's verify your news for accuracy using AI!",
      "action": {
-         "default_popup": "popup.html"
- 
-     }
+         "default_popup": "popup2.html"
+     },
+     "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api-inference.huggingface.co/*"
+  ]
    
      
  }
