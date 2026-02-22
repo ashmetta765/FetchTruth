@@ -14,7 +14,7 @@ Don't trust everything you read online! Be more confident with your news sources
 * Allow users to give feedbacks and store feedbacks in another database
   
 ## File Setup
-> FETCH-TRUTH
+## > FETCH-TRUTH
 > > dashboard.html\
 > > feedback.html\
 > > fedback.js\
