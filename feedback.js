@@ -1,5 +1,6 @@
 const SERVER = "http://127.0.0.1:3000";
 
+// file for recieving user feedback
 const params = new URLSearchParams(window.location.search);
 const url = decodeURIComponent(params.get("url") || "");
 const title = decodeURIComponent(params.get("title") || "");
@@ -12,28 +13,28 @@ badge.textContent = verdict === "real" ? "🟢 Verified" : "🔴 Unverified";
 badge.className = `verdict-badge ${verdict === "real" ? "real" : "unverified"}`;
 
 let selectedOpinion = "";
-
+//agree button
 document.getElementById("agree-btn").addEventListener("click", () => {
     selectedOpinion = "Agree";
     document.getElementById("agree-btn").classList.add("selected");
     document.getElementById("disagree-btn").classList.remove("selected");
     document.getElementById("unsure-btn").classList.remove("selected");
 });
-
+//disagree button
 document.getElementById("disagree-btn").addEventListener("click", () => {
     selectedOpinion = "Disagree";
     document.getElementById("disagree-btn").classList.add("selected");
     document.getElementById("agree-btn").classList.remove("selected");
     document.getElementById("unsure-btn").classList.remove("selected");
 });
-
+//unsure button
 document.getElementById("unsure-btn").addEventListener("click", () => {
     selectedOpinion = "Unsure";
     document.getElementById("unsure-btn").classList.add("selected");
     document.getElementById("agree-btn").classList.remove("selected");
     document.getElementById("disagree-btn").classList.remove("selected");
 });
-
+// submit button for user response
 document.getElementById("submit-btn").addEventListener("click", async () => {
     const comments = document.getElementById("comments").value.trim();
 
@@ -41,7 +42,7 @@ document.getElementById("submit-btn").addEventListener("click", async () => {
         alert("Please select an option or leave a comment before submitting.");
         return;
     }
-
+    
     await fetch(`${SERVER}/api/feedback`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

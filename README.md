@@ -4,7 +4,7 @@ Be more confident with your news sources by using Fetch Truth! This is an LLM po
 ## Technologies
 * Javascript 
 * HTML
-* Huggingface LLM Model by: XYZ
+* [Huggingface LLM Model] (https://huggingface.co/XSY/albert-base-v2-fakenews-discriminator)
 ## Strategy
 * Create web extension
 * Send links to model

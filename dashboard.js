@@ -1,6 +1,7 @@
 const SERVER = "http://127.0.0.1:3000";
 let allData = [];
 
+//js for data visualization via sqlite
 async function loadData() {
     const res = await fetch(`${SERVER}/api/history`);
     allData = await res.json();
