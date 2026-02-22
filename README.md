@@ -21,9 +21,9 @@ Don't trust everything you read online! Be more confident with your news sources
 > > manifest.json\
 > > popup2.html\
 > > testedPopup.js\
-> fetchTruth-server
-> >  fetchtruth.db\
-> > package.json\
-> > server.js\
+> > > fetchTruth-server
+> > > > fetchtruth.db\
+> > > > package.json\
+> > > > server.js\
 
 
