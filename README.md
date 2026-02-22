@@ -14,16 +14,16 @@ Don't trust everything you read online! Be more confident with your news sources
 * Allow users to give feedbacks and store feedbacks in another database
   
 ## File Setup
-## > FETCH-TRUTH
+> FETCH-TRUTH
 > > dashboard.html\
 > > feedback.html\
 > > fedback.js\
 > > manifest.json\
 > > popup2.html\
 > > testedPopup.js\
-> > fetchTruth-server\
-> > > fetchtruth.db\
-> > > package.json\
-> > > server.js\
+> fetchTruth-server
+> >  fetchtruth.db\
+> > package.json\
+> > server.js\
 
 
