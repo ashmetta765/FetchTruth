@@ -4,17 +4,26 @@ Don't trust everything you read online! Be more confident with your news sources
 ## Technologies
 * Javascript 
 * HTML
-* Hugging Face model: 
+* [HuggingFace LLM:](https://huggingface.co/XSY/albert-base-v2-fakenews-discriminator)
+ 
 ## Strategy
 * Create web extension
 * Send links to model
 * Have model return back verification 
 * Store results into a database
-* Allow users to give feedbacks and store feedbacks
+* Allow users to give feedbacks and store feedbacks in another database
   
 ## File Setup
-> testedPopup.js:
-> (future db):
-> other: 
+> FETCH-TRUTH
+> > dashboard.html
+> > feedback.html
+> > fedback.js
+> > manifest.json
+> > popup2.html
+> > testedPopup.js
+> > fetchTruth-server
+> > > fetchtruth.db
+> > > package.json
+> > > server.js
 
 
