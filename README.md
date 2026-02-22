@@ -4,7 +4,7 @@ Don't trust everything you read online! Be more confident with your news sources
 ## Technologies
 * Javascript 
 * HTML
-* [HuggingFace LLM:](https://huggingface.co/XSY/albert-base-v2-fakenews-discriminator)
+* [HuggingFace LLM](https://huggingface.co/XSY/albert-base-v2-fakenews-discriminator)
  
 ## Strategy
 * Create web extension
