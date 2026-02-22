@@ -15,15 +15,15 @@ Don't trust everything you read online! Be more confident with your news sources
   
 ## File Setup
 > FETCH-TRUTH
-> > dashboard.html
-> > feedback.html
-> > fedback.js
-> > manifest.json
-> > popup2.html
-> > testedPopup.js
-> > fetchTruth-server
-> > > fetchtruth.db
-> > > package.json
-> > > server.js
+> > dashboard.html\
+> > feedback.html\
+> > fedback.js\
+> > manifest.json\
+> > popup2.html\
+> > testedPopup.js\
+> > fetchTruth-server\
+> > > fetchtruth.db\
+> > > package.json\
+> > > server.js\
 
 
