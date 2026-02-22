@@ -4,7 +4,8 @@
   "version": "1.0",
   "description": "Let's verify your news for accuracy using AI!",
   "action": {
-    "default_popup": "popup2.html"
+    "default_popup": "popup2.html",
+    "default_icon": "TrueLogo.png"
   },
   "permissions": [
     "activeTab",
@@ -12,8 +13,13 @@
     "storage"
   ],
   "host_permissions": [
-    "https://api-inference.huggingface.co/*"
+    "https://router.huggingface.co/*",
+    "http://127.0.0.1:3000/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "dashboard.html", "dashboard.js", "feedback.html", "feedback.js" ],
+      "matches": [ "<all_urls>" ]
+    }
   ]
 }
-
-    

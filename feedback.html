@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>FetchTruth Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            width: 500px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #2eccb6;
+            margin-bottom: 6px;
+            font-size: 22px;
+        }
+
+        .article-title {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 20px;
+            border-left: 3px solid #2eccb6;
+            padding-left: 10px;
+        }
+
+        .verdict-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+            .verdict-badge.real {
+                background: #e0faf4;
+                color: #2eccb6;
+            }
+
+            .verdict-badge.unverified {
+                background: #fde8e8;
+                color: #e74c3c;
+            }
+
+        label {
+            font-size: 13px;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+            .option-btn:hover {
+                border-color: #2eccb6;
+            }
+
+            .option-btn.selected {
+                border-color: #2eccb6;
+                background: #e0faf4;
+                color: #2eccb6;
+                font-weight: 600;
+            }
+
+            .option-btn.disagree.selected {
+                border-color: #e74c3c;
+                background: #fde8e8;
+                color: #e74c3c;
+            }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+            textarea:focus {
+                outline: none;
+                border-color: #2eccb6;
+            }
+
+        .submit-btn {
+            width: 100%;
+            background: #2eccb6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+            .submit-btn:hover {
+                background: #28bfa8;
+            }
+
+        .success {
+            text-align: center;
+            color: #2eccb6;
+            font-size: 14px;
+            margin-top: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Your Feedback</h2>
+        <div class="article-title" id="article-title">Loading...</div>
+        <div id="verdict-badge" class="verdict-badge"></div>
+
+        <label>Do you agree with this result?</label>
+        <div class="options">
+            <button class="option-btn" id="agree-btn">👍 Agree</button>
+            <button class="option-btn disagree" id="disagree-btn">👎 Disagree</button>
+            <button class="option-btn" id="unsure-btn">🤔 Unsure</button>
+        </div>
+
+        <label>Additional comments (optional)</label>
+        <textarea id="comments" placeholder="Share your thoughts about this article..."></textarea>
+
+        <button class="submit-btn" id="submit-btn">Submit Feedback</button>
+        <div class="success" id="success-msg">✅ Feedback submitted! Redirecting to dashboard...</div>
+    </div>
+
+    <script src="feedback.js"></script>
+</body>
+</html>

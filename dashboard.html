@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>FetchTruth Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #2eccb6;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            header h1 {
+                color: white;
+                font-size: 24px;
+            }
+
+            header span {
+                color: white;
+                font-size: 14px;
+            }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            padding: 30px 40px 10px 40px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px 30px;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+            .stat-box h2 {
+                font-size: 32px;
+                color: #2eccb6;
+            }
+
+            .stat-box p {
+                font-size: 13px;
+                color: #888;
+                margin-top: 4px;
+            }
+
+            .stat-box.unverified h2 {
+                color: #e74c3c;
+            }
+
+        .container {
+            padding: 20px 40px 40px 40px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+            .toolbar input {
+                padding: 8px 14px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 13px;
+                width: 300px;
+            }
+
+            .toolbar button {
+                background-color: #e74c3c;
+                color: white;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-family: 'Poppins', sans-serif;
+                font-size: 13px;
+            }
+
+                .toolbar button:hover {
+                    background-color: #c0392b;
+                }
+
+        .refresh {
+            background-color: #2eccb6 !important;
+            margin-left: 10px;
+        }
+
+            .refresh:hover {
+                background-color: #28bfa8 !important;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background-color: #2eccb6;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f9f9f9;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+            .badge.real {
+                background-color: #e0faf4;
+                color: #2eccb6;
+            }
+
+            .badge.unverified {
+                background-color: #fde8e8;
+                color: #e74c3c;
+            }
+
+        .url-link {
+            color: #555;
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 12px;
+        }
+
+            .url-link:hover {
+                color: #2eccb6;
+            }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔍 FetchTruth Dashboard</h1>
+        <span id="last-updated"></span>
+    </header>
+
+    <div class="stats">
+        <div class="stat-box">
+            <h2 id="total-count">0</h2>
+            <p>Total Articles Verified</p>
+        </div>
+        <div class="stat-box">
+            <h2 id="real-count">0</h2>
+            <p>Verified Articles</p>
+        </div>
+        <div class="stat-box unverified">
+            <h2 id="fake-count">0</h2>
+            <p>Unverified Articles</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="toolbar">
+            <input type="text" id="search" placeholder="Search by title or URL...">
+            <div>
+                <button id="refresh-btn" class="refresh">↻ Refresh</button>
+                <button id="clear-btn">🗑 Clear All</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Verdict</th>
+                    <th>Verified %</th>
+                    <th>Unverified %</th>
+                    <th>Date</th>
+                    <th>URL</th>
+                    <th>User Feedback</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <tr><td colspan="8" class="no-data">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
