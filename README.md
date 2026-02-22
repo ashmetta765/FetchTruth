@@ -1,5 +1,6 @@
 # FetchTruth
 Don't trust everything you read online! Be more confident with your news sources by using Fetch Truth! This is an LLM powered news verification tool that can help users trust whether their news sources are verified by facts or not.
+
 ![](fetchExtensionpic.png)
 
 ## Technologies
