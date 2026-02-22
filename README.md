@@ -20,10 +20,10 @@ Don't trust everything you read online! Be more confident with your news sources
 > > fedback.js\
 > > manifest.json\
 > > popup2.html\
-> > testedPopup.js\
+> > testedPopup.js
 > > > fetchTruth-server
 > > > > fetchtruth.db\
 > > > > package.json\
-> > > > server.js\
+> > > > server.js
 
 
